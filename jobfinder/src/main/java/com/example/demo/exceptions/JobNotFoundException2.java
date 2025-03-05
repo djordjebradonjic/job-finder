@@ -1,4 +1,4 @@
-package exceptions;
+package com.example.demo.exceptions;
 
 public class JobNotFoundException2 extends  RuntimeException {
     private  final Long jobId;

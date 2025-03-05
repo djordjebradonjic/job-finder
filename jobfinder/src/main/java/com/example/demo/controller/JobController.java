@@ -3,15 +3,14 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Job;
 import com.example.demo.services.JobService;
-import exceptions.BadRequestException;
-import exceptions.JobNotFoundException;
-import exceptions.JobNotFoundException2;
+import com.example.demo.exceptions.BadRequestException;
+import com.example.demo.exceptions.JobNotFoundException;
+import com.example.demo.exceptions.JobNotFoundException2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.DocFlavor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 
-import exceptions.BadRequestException;
-import exceptions.JobNotFoundException2;
+import com.example.demo.exceptions.BadRequestException;
+import com.example.demo.exceptions.JobNotFoundException2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
