@@ -5,6 +5,7 @@ import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.JobNotFoundException2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -30,5 +31,13 @@ public class GlobalExceptionController {
         errorResponse.put("status", HttpStatus.NOT_FOUND);
         errorResponse.put("error","Job not found with ID:" + ex.getJobId());
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex){
+        Map<String, Object> errorResponse= new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errorResponse.put(error.getField(),error.getDefaultMessage()));
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
 }

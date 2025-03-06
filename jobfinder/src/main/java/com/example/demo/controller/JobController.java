@@ -6,6 +6,7 @@ import com.example.demo.services.JobService;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.JobNotFoundException;
 import com.example.demo.exceptions.JobNotFoundException2;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class JobController {
     }
 
     @PostMapping
-    public Job  createJob(@RequestBody Job job){
+    public Job  createJob(@RequestBody @Valid Job job){
         if (job == null) throw new  BadRequestException("ObjectIsNull");
         return jobService.saveJob(job);
     }
@@ -46,8 +47,12 @@ public class JobController {
         jobService.deleteJob(id);
     }
 
+    @PutMapping("/{id}")
+    public Job updateJob(@PathVariable Long id, @RequestBody @Valid Job job){
+        if(jobService.getJobById(id)== null) throw new JobNotFoundException2(id);
+        return jobService.updateJob(id,job);
 
-
+    }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Map<String, Object>> handleBadRequest(BadRequestException ex){
 
@@ -57,5 +62,6 @@ public class JobController {
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
+
 
 }
