@@ -1,6 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.entity.Job;
+import com.example.demo.model.Job;
 import com.example.demo.exceptions.JobNotFoundException2;
 import com.example.demo.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;

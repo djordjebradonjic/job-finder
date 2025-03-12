@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.entity.Job;
+import com.example.demo.model.Job;
 import com.example.demo.services.JobService;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.JobNotFoundException;
