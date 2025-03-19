@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Users;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginController {
@@ -12,4 +11,7 @@ public class LoginController {
     public String greeting(HttpServletRequest req){
         return "Welcome to JobFinder application" + req.getSession().getId();
 
-    }}
+    }
+
+
+}

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Users;
+import com.example.demo.services.JWTService;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +15,7 @@ import java.util.List;
 @RestController
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
 
 
@@ -24,5 +25,9 @@ public class UserController {
         return userService.register(user);
     }
 
+    @PostMapping("/login")
+    public String login(@RequestBody Users user){
+        return userService.verify(user);
+    }
 
 }
