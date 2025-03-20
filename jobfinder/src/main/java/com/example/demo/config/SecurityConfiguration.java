@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +29,10 @@ public class SecurityConfiguration {
     @Autowired
     @Lazy
     private UserDetailsService UserDetailsService;
+
+    @Autowired
+    @Lazy
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
     @Bean
@@ -40,7 +45,8 @@ public class SecurityConfiguration {
        // http.formLogin(Customizer.withDefaults());
         http.httpBasic(Customizer.withDefaults())//this is for Postman
         .sessionManagement(sesion ->
-                sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

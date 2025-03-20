@@ -9,7 +9,7 @@ public class LoginController {
 
     @GetMapping ("/")
     public String greeting(HttpServletRequest req){
-        return "Welcome to JobFinder application" + req.getSession().getId();
+        return "Welcome to JobFinder application" + req.getSession().getId()  ;
 
     }
 
