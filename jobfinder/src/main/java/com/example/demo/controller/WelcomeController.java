@@ -1,11 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Users;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class LoginController {
+public class WelcomeController {
 
     @GetMapping ("/")
     public String greeting(HttpServletRequest req){
