@@ -50,11 +50,11 @@ public class UserService {
     }
 
 
-    public String verify(Users user) {
+    public String verify(String username, String password) {
         Authentication authentication = authManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(username,password));
     if (authentication.isAuthenticated())
-            return jwtService.generateToken(user.getUsername());
+            return jwtService.generateToken(username);
     return "Fail";
 
     }

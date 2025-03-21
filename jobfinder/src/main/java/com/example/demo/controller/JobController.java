@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.SearchJobRequest;
 import com.example.demo.model.Job;
 import com.example.demo.services.JobService;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.JobNotFoundException;
 import com.example.demo.exceptions.JobNotFoundException2;
+import com.example.demo.services.JoobleApiService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,9 @@ public class JobController {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private JoobleApiService joobleApiService;
 
     @GetMapping
     public List<Job> getAllJobs(){
@@ -53,6 +58,15 @@ public class JobController {
         return jobService.updateJob(id,job);
 
     }
+
+    @GetMapping("/search")
+    public String searchJobs(@RequestBody SearchJobRequest searchJobRequest){
+        return joobleApiService.searchJobs(searchJobRequest.getKeywords(),searchJobRequest.getLocation());
+    }
+
+
+
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Map<String, Object>> handleBadRequest(BadRequestException ex){
 

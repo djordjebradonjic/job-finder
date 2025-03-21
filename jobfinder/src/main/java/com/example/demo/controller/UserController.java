@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.UserRequestDTO;
 import com.example.demo.model.Users;
 import com.example.demo.services.UserService;
@@ -24,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Users user){
-        return userService.verify(user);
+    public String login(@RequestBody LoginRequest loginRequest){
+        return userService.verify(loginRequest.getUsername(),loginRequest.getPassword());
     }
 
 }
