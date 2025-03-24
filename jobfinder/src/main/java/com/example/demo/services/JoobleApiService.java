@@ -1,6 +1,13 @@
 package com.example.demo.services;
 
 
+import com.example.demo.dto.JoobleJobDTO;
+import com.example.demo.dto.JoobleJobResponse;
+import com.example.demo.mapper.JobMapper;
+import com.example.demo.model.Job;
+import com.example.demo.repository.JobRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class JoobleApiService {
@@ -19,9 +28,18 @@ public class JoobleApiService {
     @Value("${jooble.api.key}")
     private String apiKey;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private JobRepository jobRepository;
+
+    @Autowired
+    private JobMapper jobMapper;
+
     private final RestTemplate restTemplate= new RestTemplate();
 
-    public String searchJobs(String keyWords, String location){
+    public void searchJobs(String keyWords, String location){
 
         String url = "https://rs.jooble.org/api/" + apiKey;
 
@@ -33,9 +51,27 @@ public class JoobleApiService {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Map<String,Object>> httpEntity = new HttpEntity<>(requestBody,httpHeaders);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,httpEntity,String.class);
-        if(responseEntity.getBody() == null)
-            return "Nema podataka.";
-        else return responseEntity.getBody();
+        ResponseEntity<String> response = restTemplate.postForEntity(url,httpEntity, String.class);
+
+        if(response.getBody()!= null){
+            try{
+                JoobleJobResponse jobResponse = objectMapper.readValue(response.getBody(), JoobleJobResponse.class);
+
+                List<Job> joobleJobDTOList = jobResponse.getJobs().stream()
+                        .map(jobMapper::toEntity)
+                        .toList();
+                System.out.print(joobleJobDTOList.stream().toString());
+
+                jobRepository.saveAll(joobleJobDTOList);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void saveJobsToDatabase(List<Job> jobs){
+        if(jobs != null  && !jobs.isEmpty())
+            jobRepository.saveAll(jobs);
     }
 }

@@ -1,45 +1,68 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
 
 @Entity
+@Table(name = "job")
 public class Job {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
+    @Column
+ //   @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Description is required")
-    private String description;
-
-    @NotBlank(message = "Company name is  required")
-    private String company;
-
-    @NotBlank(message = "Location is required")
+    @Column
+//    @NotBlank(message = "Location is required")
     private String location;
 
-    @NotBlank(message = "Url is required")
-    @URL(message = "Invalid URL ")
+    @Column
+ //   @NotBlank(message = "Company name is  required")
+    private String company;
+
+
+    @Column
+ //   @NotBlank(message = "Url is required")
+  //  @URL(message = "Invalid URL ")
     private String url;
+
+    @Column(columnDefinition = "TEXT")
+    private String snippet;
+
+    @Column
+    private String salary;
+
+    @Column
+    private String source;
+
+    @Column
+    private String type;
+
+    @Column
+    private String link;
+
+    @Column
+    private String updated;
 
     public Job(){}
 
-    public Job(String title, String description, String company, String location, String url){
-        this.title=title;
-        this.description=description;
-        this.company=company;
-        this.location=location;
-        this.url=url;
+    public Job(String title, String location, String company, String snippet,
+               String salary, String source, String type, String link, String updated) {
+        this.title = title;
+        this.location = location;
+        this.company = company;
+        this.snippet = snippet;
+        this.salary = salary;
+        this.source = source;
+        this.type = type;
+        this.link = link;
+        this.updated = updated;
     }
 
     public String getLocation() {
@@ -62,9 +85,6 @@ public class Job {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
     public String getCompany() {
         return company;
@@ -75,11 +95,56 @@ public class Job {
         this.title = title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public String getSnippet() {
+        return snippet;
+    }
+
+    public void setSnippet(String snippet) {
+        this.snippet = snippet;
+    }
+
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
 }

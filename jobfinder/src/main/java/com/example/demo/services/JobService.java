@@ -34,7 +34,6 @@ public class JobService {
                 .map(existingJob ->{
                     existingJob.setTitle(job.getTitle());
                     existingJob.setCompany(job.getCompany());
-                    existingJob.setDescription(job.getDescription());
                     existingJob.setUrl(job.getUrl());
                     existingJob.setLocation(job.getLocation());
                     return jobRepository.save(existingJob);

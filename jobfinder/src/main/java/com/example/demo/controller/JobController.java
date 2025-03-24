@@ -60,8 +60,8 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    public String searchJobs(@RequestBody SearchJobRequest searchJobRequest){
-        return joobleApiService.searchJobs(searchJobRequest.getKeywords(),searchJobRequest.getLocation());
+    public void searchJobs(@RequestBody SearchJobRequest searchJobRequest){
+         joobleApiService.searchJobs(searchJobRequest.getKeywords(),searchJobRequest.getLocation());
     }
 
 
