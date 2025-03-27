@@ -65,6 +65,18 @@ public class Job {
         this.updated = updated;
     }
 
+    public Job(String title, String company, String location, String link) {
+        this.title=title;
+        this.company=company;
+        this.location=location;
+        this.link=link;
+        this.snippet="/";
+        this.salary="/";
+        this.source="/";
+        this.type="/";
+        this.updated="/";
+    }
+
     public String getLocation() {
         return location;
     }
