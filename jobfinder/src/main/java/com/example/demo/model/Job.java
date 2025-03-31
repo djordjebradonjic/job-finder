@@ -50,6 +50,7 @@ public class Job {
     @Column
     private String updated;
 
+
     public Job(){}
 
     public Job(String title, String location, String company, String snippet,

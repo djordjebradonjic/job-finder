@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.HelloWorldJobs;
 import com.example.demo.model.Job;
 import com.example.demo.services.ScraperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class HelloWorldScraperController {
     private ScraperService scraperService;
 
     @GetMapping
-    public List<Job> scrapeJobs(){
+    public List<HelloWorldJobs> scrapeJobs(){
         return scraperService.scrape();
     }
 }

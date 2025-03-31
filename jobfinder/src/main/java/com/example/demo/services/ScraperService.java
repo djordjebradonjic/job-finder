@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 
+import com.example.demo.model.HelloWorldJobs;
 import com.example.demo.model.Job;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -20,67 +21,85 @@ public class ScraperService {
     private final String BaseURL = "https://www.helloworld.rs/oglasi-za-posao/programiranje/beograd?sort=p_vreme_postavljanja_sort&senioritet%5B0%5D=1&senioritet%5B1%5D=2&cat=340";
 
     private final ChromeDriver driver;
+    private List<HelloWorldJobs> jobs = new ArrayList<>();
+
+
 
     public ScraperService(ChromeDriver driver) {
         this.driver = driver;
     }
 
-    public List<Job> scrape() {
-        List<Job> jobs = new ArrayList<>();
+    public List<HelloWorldJobs> scrape() {
         Set<String> processedJobUrls = new HashSet<>();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-            int pageNumber = 1;
             boolean hasNextPage = true;
+            int pageNumber = 0;
+            String currentPageUrl = BaseURL;
             while (hasNextPage) {
-                String URL = BaseURL + "&page=" + pageNumber;
-                driver.get(URL);
-
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
-
+               // String currentPageUrl = BaseURL + "&page=" + pageNumber;
+                driver.get(currentPageUrl);
+                System.out.println("Loading page: " + currentPageUrl);
+                System.out.println(pageNumber + "*****************************************************");
                 wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("div.relative.bg-white.shadow-md")));
+
                 List<WebElement> jobList = driver.findElements(By.cssSelector("div.relative.bg-white.shadow-md"));
-                System.out.println("Broj pronađenih oglasa na stranici: " + jobList.size());
+                System.out.println("Number of jobd founded on page " + jobList.size());
+                extractJobListings(jobList, processedJobUrls);
+                pageNumber=pageNumber+30;
+                WebElement nextLinkElement = findNextPageLink(wait, pageNumber);
 
-                extractJobListings(jobList, wait,processedJobUrls);
-                try {
-                    wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-                    WebElement nextPageLink = driver.findElement(By.cssSelector("div.pagination a[href] i.las.la-angle-right"));
-
-                    if (nextPageLink.isDisplayed() && nextPageLink.isEnabled()) {
-                        pageNumber++;
+                if (nextLinkElement != null) {
+                    String nextLinkHref = nextLinkElement.getAttribute("href");
+                    if (nextLinkHref != null && !nextLinkHref.isEmpty()) {
+                        System.out.println(nextLinkHref + "*********SLEDECI LINK ZA STRANU*********************");
+                        currentPageUrl = nextLinkHref;
                     } else {
                         hasNextPage = false;
                     }
-                } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("Nema sledeće stranice. Prekidam petlju.");
+                } else {
+                    System.out.println("NEXT LINK ELEEMNT IS NULL -----------------------------------------");
                     hasNextPage = false;
                 }
-
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
-
         } finally {
-            driver.quit();
+            if (driver != null) {
+                driver.quit();
+            }
         }
         return jobs;
     }
 
-    private void extractJobListings(List<WebElement> jobList, WebDriverWait wait, Set<String> processedJobUrls) {
-        for (WebElement jobElement : jobList) {
+    private WebElement findNextPageLink(WebDriverWait wait, int currentPageNumber) {
+        try {
+            List<WebElement> pageLinks = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("div.pagination a")));
+            for (WebElement link : pageLinks) {
+                String href = link.getAttribute("href");
+                System.out.println(href + "-------------------------------------------");
+                if (href != null && href.contains("stranica/" + currentPageNumber)) {
+                    return link;
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error finding link to the next page: " + e.getMessage());
+            return null;
+        }
+    }
 
+    private void extractJobListings(List<WebElement> jobList, Set<String> processedJobUrls) { // Smanjio sam argumente
+        for (WebElement jobElement : jobList) {
             try {
                 WebElement titleElement = jobElement.findElement(By.cssSelector("h3 a.__ga4_job_title"));
-
                 String title = titleElement.getText().trim();
                 String jobUrl = titleElement.getAttribute("href");
+
                 if (!processedJobUrls.contains(jobUrl)) {
                     processedJobUrls.add(jobUrl);
-
 
                     String company = "/";
                     try {
@@ -97,7 +116,6 @@ public class ScraperService {
                     } catch (NoSuchElementException e) {
                         System.err.println("Location element not found for job: " + title + ". Setting location to '/'.");
                     }
-
 
                     String expiryDate = "/";
                     try {
@@ -124,6 +142,8 @@ public class ScraperService {
                         System.err.println("Seniority element not found for job: " + title + ". Setting seniority to '/'.");
                     }
 
+                    HelloWorldJobs job = new HelloWorldJobs(title, company, location, expiryDate, tags.toString(), seniority, jobUrl);
+                    jobs.add(job);
 
                     System.out.println("Title: " + title);
                     System.out.println("Company: " + company);
@@ -131,7 +151,8 @@ public class ScraperService {
                     System.out.println("Expiry Date: " + expiryDate);
                     System.out.println("Tags: " + tags);
                     System.out.println("Seniority: " + seniority);
-
+                    System.out.println("URL: " + jobUrl);
+                    System.out.println("--------------------");
                 }
             } catch (Exception e) {
                 System.err.println("Error extracting information from a job listing: " + e.getMessage());
