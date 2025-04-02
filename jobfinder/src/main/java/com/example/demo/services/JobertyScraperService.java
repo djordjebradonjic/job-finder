@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.ObjectError;
 
 import java.time.Duration;
 import java.util.*;
@@ -22,8 +23,8 @@ public class JobertyScraperService {
     @Autowired
     ChromeDriver driver;
 
-    public void scrape(){
-        Set<JobertyJob> processedJobs = new HashSet<>();
+    public List<JobertyJob> scrape(){
+        List<JobertyJob> jobs = new ArrayList<>();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         int pageNumber = 1;
         try{
@@ -37,32 +38,43 @@ public class JobertyScraperService {
                 List<WebElement> jobList = driver.findElements(By.cssSelector("div.jbox.flex.flex-col.gap-4.drop-shadow-sm"));
                 System.out.println("Number of jobd founded on page " + jobList.size());
 
-                List<Map<String, String>> jobs = new ArrayList<>();
+
 
                 for (WebElement jobElement : jobList) {
-                    Map<String, String> job = new HashMap<>();
 
-                    // Dohvati naziv posla (primjer za veće ekrane)
                     WebElement titleElement = jobElement.findElement(By.cssSelector("span.text-gray-900 > a"));
-                    job.put("naziv_posla", titleElement.getText());
-                    job.put("link_detalji", titleElement.getAttribute("href"));
+                    String title = titleElement.getText();
+                    String detailsLink =  titleElement.getAttribute("href");
 
-                    // Dohvati naziv tvrtke
                     WebElement companyElement = jobElement.findElement(By.cssSelector("span.text-gray-500 > a"));
-                    job.put("naziv_tvrtke", companyElement.getText());
+                    String company = companyElement.getText();
 
-                    jobs.add(job);
+                    List<WebElement> tagElements= jobElement.findElements(By.cssSelector("span.inline-flex"));
+                    List<String> tags= extractTags(tagElements);
+                    JobertyJob newJob = new JobertyJob(title, company,detailsLink,tags);
+                    System.out.println(newJob.toString());
+                    jobs.add(newJob);
+
                 }
 
-                // Ispišite izvučene podatke
-                for (Map<String, String> job : jobs) {
-                    System.out.println(job);
-                }
+
+                return jobs;
         }catch (Exception e){
             e.printStackTrace();
+            return null;
         }finally {
             if(driver != null)
                 driver.close();
         }
+    }
+
+
+
+    public List<String> extractTags(List<WebElement> tagElements){
+        List<String> tags= new ArrayList<>();
+        for(WebElement element : tagElements){
+            tags.add(element.getText());
+        }
+        return tags;
     }
 }
