@@ -25,15 +25,13 @@ public class JobertyScraperService {
     public void scrape(){
         Set<JobertyJob> processedJobs = new HashSet<>();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
+        int pageNumber = 1;
         try{
-            boolean hasNextPage = true;
-            int pageNumber = 0;
+
             String currentPageURL= BaseUrl;
-            while(hasNextPage){
                 driver.get(currentPageURL);
                 System.out.println("Loading page: " + currentPageURL);
-                System.out.println("Page numger: " + pageNumber + "**********************");
+                System.out.println("Page numger: " + pageNumber  );
 
                 wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.jbox.flex.flex-col.gap-4.drop-shadow-sm")));
                 List<WebElement> jobList = driver.findElements(By.cssSelector("div.jbox.flex.flex-col.gap-4.drop-shadow-sm"));
@@ -60,9 +58,6 @@ public class JobertyScraperService {
                 for (Map<String, String> job : jobs) {
                     System.out.println(job);
                 }
-
-            }
-
         }catch (Exception e){
             e.printStackTrace();
         }finally {
