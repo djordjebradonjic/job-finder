@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 
 import com.example.demo.model.HelloWorldJobs;
+import com.example.demo.model.InfoStudJob;
 import com.example.demo.model.JobertyJob;
+import com.example.demo.services.InfoStudScraperService;
 import com.example.demo.services.JobertyScraperService;
 import com.example.demo.services.ScraperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class JobScraperController {
     @Autowired
     private JobertyScraperService jobertyScraperService;
 
+    @Autowired
+    private InfoStudScraperService infoStudScraperService;
+
     @GetMapping("/helloworld")
     public List<HelloWorldJobs> scrapeHelloWorldJobs(){
         return scraperService.scrape();
@@ -33,4 +38,8 @@ public class JobScraperController {
         return   jobertyScraperService.scrape();
     }
 
+    @GetMapping("/infoStud")
+    public List<InfoStudJob> scrapeInfoStud(){
+        return infoStudScraperService.scrape();
+    }
 }
