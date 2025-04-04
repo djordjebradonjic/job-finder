@@ -5,144 +5,163 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
+import java.util.List;
+
 
 @Entity
-@Table(name = "job")
+@Table(name = "jobs")
 public class Job {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment ID
     private Long id;
 
-    @Column
- //   @NotBlank(message = "Title is required")
     private String title;
-
-    @Column
-//    @NotBlank(message = "Location is required")
-    private String location;
-
-    @Column
- //   @NotBlank(message = "Company name is  required")
-    private String company;
-
-
-    @Column
- //   @NotBlank(message = "Url is required")
-  //  @URL(message = "Invalid URL ")
-    private String url;
-
-    @Column(columnDefinition = "TEXT")
     private String snippet;
-
-    @Column
     private String salary;
-
-    @Column
-    private String source;
-
-    @Column
-    private String type;
-
-    @Column
     private String link;
-
-    @Column
     private String updated;
+    @Column(name = "details_link")
+    private String detailsLink;
+    @ElementCollection
+    private List<String> tags;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    private Company company;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "details_id")
+    private JobDetails details;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "source_id")
+    private JobSource source;
 
+    public static class JobBuilder {
+        private String title;
+        private String snippet;
+        private String salary;
+        private String link;
+        private String updated;
+        private String detailsLink;
+        private List<String> tags;
+        private Company company;
+        private JobDetails details;
+        private JobSource source;
+
+        public JobBuilder(String title) { // Obavezan title
+            this.title = title;
+        }
+
+        public JobBuilder snippet(String snippet) {
+            this.snippet = snippet;
+            return this;
+        }
+
+        public JobBuilder salary(String salary) {
+            this.salary = salary;
+            return this;
+        }
+
+        public JobBuilder link(String link) {
+            this.link = link;
+            return this;
+        }
+
+        public JobBuilder updated(String updated) {
+            this.updated = updated;
+            return this;
+        }
+
+        public JobBuilder detailsLink(String detailsLink) {
+            this.detailsLink = detailsLink;
+            return this;
+        }
+
+        public JobBuilder tags(List<String> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public JobBuilder company(Company company) {
+            this.company = company;
+            return this;
+        }
+
+        public JobBuilder details(JobDetails details) {
+            this.details = details;
+            return this;
+        }
+
+        public JobBuilder source(JobSource source) {
+            this.source = source;
+            return this;
+        }
+
+        public Job build() {
+            return new Job(this);
+        }
+    }
 
     public Job(){}
 
-    public Job(String title, String location, String company, String snippet,
-               String salary, String source, String type, String link, String updated) {
-        this.title = title;
-        this.location = location;
-        this.company = company;
-        this.snippet = snippet;
-        this.salary = salary;
-        this.source = source;
-        this.type = type;
-        this.link = link;
-        this.updated = updated;
+    private Job(JobBuilder builder) {
+        this.title = builder.title;
+        this.snippet = builder.snippet;
+        this.salary = builder.salary;
+        this.link = builder.link;
+        this.updated = builder.updated;
+        this.detailsLink = builder.detailsLink;
+        this.tags = builder.tags;
+        this.company = builder.company;
+        this.details = builder.details;
+        this.source = builder.source;
     }
 
-    public Job(String title, String company, String location, String link) {
-        this.title=title;
-        this.company=company;
-        this.location=location;
-        this.link=link;
-        this.snippet="/";
-        this.salary="/";
-        this.source="/";
-        this.type="/";
-        this.updated="/";
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-
-    public String getCompany() {
-        return company;
-    }
-
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getSnippet() {
-        return snippet;
-    }
-
-    public void setSnippet(String snippet) {
-        this.snippet = snippet;
-    }
-
-    public String getSalary() {
-        return salary;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
-    }
-
-    public String getSource() {
+    public JobSource getSource() {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(JobSource source) {
         this.source = source;
     }
 
-    public String getType() {
-        return type;
+    public JobDetails getDetails() {
+        return details;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDetails(JobDetails details) {
+        this.details = details;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getDetailsLink() {
+        return detailsLink;
+    }
+
+    public void setDetailsLink(String detailsLink) {
+        this.detailsLink = detailsLink;
+    }
+
+    public String getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
 
     public String getLink() {
@@ -153,11 +172,27 @@ public class Job {
         this.link = link;
     }
 
-    public String getUpdated() {
-        return updated;
+    public String getSalary() {
+        return salary;
     }
 
-    public void setUpdated(String updated) {
-        this.updated = updated;
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
+
+    public String getSnippet() {
+        return snippet;
+    }
+
+    public void setSnippet(String snippet) {
+        this.snippet = snippet;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

@@ -10,16 +10,17 @@ public class JobMapper {
     public JobMapper(){}
 
     public Job toEntity(JoobleJobDTO joobleJobDTO){
-        Job job = new Job();
-        job.setTitle(joobleJobDTO.getTitle());
-        job.setLocation(joobleJobDTO.getLocation());
-        job.setSnippet(joobleJobDTO.getSnippet());
-        job.setSalary(joobleJobDTO.getSalary());
-        job.setSource(joobleJobDTO.getSource());
-        job.setType(joobleJobDTO.getType());
-        job.setLink(joobleJobDTO.getLink());
-        job.setCompany(joobleJobDTO.getCompany());
-        job.setUpdated(joobleJobDTO.getUpdated());
-        return job;
+        if (joobleJobDTO == null) {
+            throw new IllegalArgumentException("JoobleJobDTO can not be null");
+        }
+        Job.JobBuilder builder = new Job.JobBuilder(joobleJobDTO.getTitle()) // Title je obavezan
+                .snippet(joobleJobDTO.getSnippet())
+                .salary(joobleJobDTO.getSalary())
+                .link(joobleJobDTO.getLink())
+                .updated(joobleJobDTO.getUpdated());
+
+        // Mapiranje složenih atributa
+        
+        return builder.build();
     }
 }
