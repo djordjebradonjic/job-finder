@@ -13,16 +13,19 @@ public class Company{
     private String reviewLink;
     private int numberOfReviews;
 
+    public Company(){}
 
     private Company(CompanyBuilder builder) {
         this.name = builder.name;
         this.reviewLink = builder.reviewLink;
         this.numberOfReviews = builder.numberOfReviews;
+
     }
     public static class CompanyBuilder {
         private String name;
         private String reviewLink;
         private int numberOfReviews;
+
 
         public CompanyBuilder(String name) {
             this.name = name;

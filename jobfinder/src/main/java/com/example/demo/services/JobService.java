@@ -34,8 +34,13 @@ public class JobService {
                 .map(existingJob ->{
                     existingJob.setTitle(job.getTitle());
                     existingJob.setCompany(job.getCompany());
-                    existingJob.setUrl(job.getUrl());
-                    existingJob.setLocation(job.getLocation());
+                    existingJob.getDetails().setUrl(job.getDetails().getUrl());
+                    existingJob.getDetails().setLocation(job.getDetails().getLocation());
+                    existingJob.getDetails().setExpirationDate(job.getDetails().getExpirationDate());
+                    existingJob.getDetails().setSeniority(job.getDetails().getSeniority());
+                    existingJob.setUpdated(job.getUpdated());
+                    existingJob.setLink(job.getLink());
+                    existingJob.setSalary(job.getSalary());
                     return jobRepository.save(existingJob);
                 }).orElseThrow(()->new JobNotFoundException2(id));
     }

@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.dto.JoobleJobDTO;
+import com.example.demo.model.Company;
 import com.example.demo.model.Job;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +14,14 @@ public class JobMapper {
         if (joobleJobDTO == null) {
             throw new IllegalArgumentException("JoobleJobDTO can not be null");
         }
-        Job.JobBuilder builder = new Job.JobBuilder(joobleJobDTO.getTitle()) // Title je obavezan
+        Company.CompanyBuilder companyBuilder =new Company.CompanyBuilder(joobleJobDTO.getCompany());
+        Job.JobBuilder builder = new Job.JobBuilder(joobleJobDTO.getTitle())
                 .snippet(joobleJobDTO.getSnippet())
                 .salary(joobleJobDTO.getSalary())
                 .link(joobleJobDTO.getLink())
-                .updated(joobleJobDTO.getUpdated());
+                .updated(joobleJobDTO.getUpdated())
+                .company(companyBuilder.build());
 
-        // Mapiranje složenih atributa
-        
         return builder.build();
     }
 }

@@ -41,7 +41,6 @@ public class Job {
         private String salary;
         private String link;
         private String updated;
-        private String detailsLink;
         private List<String> tags;
         private Company company;
         private JobDetails details;
@@ -71,10 +70,7 @@ public class Job {
             return this;
         }
 
-        public JobBuilder detailsLink(String detailsLink) {
-            this.detailsLink = detailsLink;
-            return this;
-        }
+
 
         public JobBuilder tags(List<String> tags) {
             this.tags = tags;
@@ -109,7 +105,6 @@ public class Job {
         this.salary = builder.salary;
         this.link = builder.link;
         this.updated = builder.updated;
-        this.detailsLink = builder.detailsLink;
         this.tags = builder.tags;
         this.company = builder.company;
         this.details = builder.details;

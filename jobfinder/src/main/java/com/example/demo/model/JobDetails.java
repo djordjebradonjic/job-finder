@@ -12,14 +12,12 @@ public class JobDetails {
 
     private String location;
     private String expirationDate;
-    private String expiryDate;
     private String seniority;
     private String url;
 
     private JobDetails(JobDetailsBuilder builder) {
         this.location = builder.location;
         this.expirationDate = builder.expirationDate;
-        this.expiryDate = builder.expiryDate;
         this.seniority = builder.seniority;
         this.url = builder.url;
     }
@@ -78,13 +76,8 @@ public class JobDetails {
         this.expirationDate = expirationDate;
     }
 
-    public String getExpiryDate() {
-        return expiryDate;
-    }
 
-    public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
-    }
+
 
     public String getSeniority() {
         return seniority;
