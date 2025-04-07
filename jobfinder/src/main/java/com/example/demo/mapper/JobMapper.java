@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.dto.JoobleJobDTO;
 import com.example.demo.model.Company;
 import com.example.demo.model.Job;
+import com.example.demo.model.JobDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,18 +11,22 @@ public class JobMapper {
 
     public JobMapper(){}
 
-    public Job toEntity(JoobleJobDTO joobleJobDTO){
-        if (joobleJobDTO == null) {
+    public Job toEntity(JoobleJobDTO joobleJob){
+        if (joobleJob == null) {
             throw new IllegalArgumentException("JoobleJobDTO can not be null");
         }
-        Company.CompanyBuilder companyBuilder =new Company.CompanyBuilder(joobleJobDTO.getCompany());
-        Job.JobBuilder builder = new Job.JobBuilder(joobleJobDTO.getTitle())
-                .snippet(joobleJobDTO.getSnippet())
-                .salary(joobleJobDTO.getSalary())
-                .link(joobleJobDTO.getLink())
-                .updated(joobleJobDTO.getUpdated())
-                .company(companyBuilder.build());
+        Company company = new Company.CompanyBuilder(joobleJob.getCompany()).build();
+        JobDetails details = new JobDetails.JobDetailsBuilder()
+                .location(joobleJob.getLocation())
+                .url(joobleJob.getLink())
+                .expirationDate(joobleJob.getUpdated())
+                .build();
+        return new Job.JobBuilder(joobleJob.getTitle())
+                .company(company)
+                .details(details)
+                .source("Jooble")
+                .build();
 
-        return builder.build();
+
     }
 }

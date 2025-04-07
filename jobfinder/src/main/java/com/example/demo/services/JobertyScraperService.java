@@ -1,7 +1,12 @@
 package com.example.demo.services;
 
 
+import com.example.demo.model.Company;
+import com.example.demo.model.Job;
+import com.example.demo.model.JobDetails;
 import com.example.demo.model.JobertyJob;
+import com.example.demo.repository.JobRepository;
+import org.modelmapper.ModelMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,7 +15,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.ObjectError;
 
 import java.time.Duration;
 import java.util.*;
@@ -21,7 +25,13 @@ public class JobertyScraperService {
     private final String BaseUrl = "https://www.joberty.com/IT-jobs?domains=Backend,Data%20Science,Fullstack,Frontend&location=Serbia,Belgrade%20%28Serbia%29&page=1&seniority=Intermediate,Internship,Junior&sort=created";
 
     @Autowired
-    ChromeDriver driver;
+   private  ChromeDriver driver;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private JobRepository jobRepository;
 
     public List<JobertyJob> scrape(){
         List<JobertyJob> jobs = new ArrayList<>();
@@ -52,6 +62,7 @@ public class JobertyScraperService {
                     List<WebElement> tagElements= jobElement.findElements(By.cssSelector("span.inline-flex"));
                     List<String> tags= extractTags(tagElements);
                     JobertyJob newJob = new JobertyJob(title, company,detailsLink,tags);
+                    saveJobertyJob(newJob);
                     System.out.println(newJob.toString());
                     jobs.add(newJob);
 
@@ -76,5 +87,17 @@ public class JobertyScraperService {
             tags.add(element.getText());
         }
         return tags;
+    }
+    private void saveJobertyJob(JobertyJob jobertyJob){
+        Company company = new Company.CompanyBuilder(jobertyJob.getCompany()).build();
+        JobDetails details = new JobDetails.JobDetailsBuilder().url(jobertyJob.getDetailsLink()).build();
+
+        Job job = new Job.JobBuilder(jobertyJob.getTitle())
+                .details(details)
+                .company(company)
+                .tags(jobertyJob.getTags())
+                .source("Joberty")
+                .build();
+        jobRepository.save(job);
     }
 }

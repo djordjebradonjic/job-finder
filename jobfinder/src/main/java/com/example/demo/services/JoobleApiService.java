@@ -4,7 +4,9 @@ package com.example.demo.services;
 import com.example.demo.dto.JoobleJobDTO;
 import com.example.demo.dto.JoobleJobResponse;
 import com.example.demo.mapper.JobMapper;
+import com.example.demo.model.Company;
 import com.example.demo.model.Job;
+import com.example.demo.model.JobDetails;
 import com.example.demo.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,13 +59,14 @@ public class JoobleApiService {
             try{
                 JoobleJobResponse jobResponse = objectMapper.readValue(response.getBody(), JoobleJobResponse.class);
 
-                List<Job> joobleJobDTOList = jobResponse.getJobs().stream()
-                        .map(jobMapper::toEntity)
-                        .toList();
+
+                List<JoobleJobDTO> joobleJobDTOList = jobResponse.getJobs();
+                for(JoobleJobDTO joobleJob : joobleJobDTOList){
+                    Job job = jobMapper.toEntity(joobleJob);
+                    saveJob(job);
+                }
                 joobleJobDTOList.forEach(job -> {
                     System.out.println(job.toString());});
-
-                jobRepository.saveAll(joobleJobDTOList);
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -71,8 +74,8 @@ public class JoobleApiService {
         }
     }
 
-    public void saveJobsToDatabase(List<Job> jobs){
-        if(jobs != null  && !jobs.isEmpty())
-            jobRepository.saveAll(jobs);
+    public void saveJob( Job job){
+        if(job != null )
+            jobRepository.save(job);
     }
 }
