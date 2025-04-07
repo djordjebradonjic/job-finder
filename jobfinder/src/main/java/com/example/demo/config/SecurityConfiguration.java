@@ -39,7 +39,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(customizer -> customizer.disable());
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("register", "login")
+                .requestMatchers("register", "login","web-scraper")
                 .permitAll()
                 .anyRequest().authenticated());
        // http.formLogin(Customizer.withDefaults());

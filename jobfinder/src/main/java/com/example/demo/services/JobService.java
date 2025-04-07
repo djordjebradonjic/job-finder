@@ -1,8 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.config.ModelMapperConfig;
 import com.example.demo.model.Job;
-import com.example.demo.exceptions.JobNotFoundException2;
 import com.example.demo.repository.JobRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,9 @@ import java.util.List;
 public class JobService {
     @Autowired
     private JobRepository jobRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     public List<Job> getAllJobs(){
         return jobRepository.findAll();
@@ -30,19 +34,12 @@ public class JobService {
     }
 
     public Job updateJob(Long id, Job job){
-        return jobRepository.findById(id)
-                .map(existingJob ->{
-                    existingJob.setTitle(job.getTitle());
-                    existingJob.setCompany(job.getCompany());
-                    existingJob.getDetails().setUrl(job.getDetails().getUrl());
-                    existingJob.getDetails().setLocation(job.getDetails().getLocation());
-                    existingJob.getDetails().setExpirationDate(job.getDetails().getExpirationDate());
-                    existingJob.getDetails().setSeniority(job.getDetails().getSeniority());
-                    existingJob.setUpdated(job.getUpdated());
-                    existingJob.setLink(job.getLink());
-                    existingJob.setSalary(job.getSalary());
-                    return jobRepository.save(existingJob);
-                }).orElseThrow(()->new JobNotFoundException2(id));
+        Job existingJob = jobRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        modelMapper.map(job,existingJob);
+
+        return jobRepository.save(existingJob);
     }
 
 }

@@ -60,7 +60,8 @@ public class JoobleApiService {
                 List<Job> joobleJobDTOList = jobResponse.getJobs().stream()
                         .map(jobMapper::toEntity)
                         .toList();
-                System.out.print(joobleJobDTOList.stream().toString());
+                joobleJobDTOList.forEach(job -> {
+                    System.out.println(job.toString());});
 
                 jobRepository.saveAll(joobleJobDTOList);
             }catch(Exception e){

@@ -17,23 +17,29 @@ public class Job {
     private Long id;
 
     private String title;
+
+    @Column(length = 500)
     private String snippet;
+
     private String salary;
     private String link;
     private String updated;
-    @Column(name = "details_link")
+
+    @Column(name = "details_link",length = 500)
     private String detailsLink;
+
     @ElementCollection
     private List<String> tags;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id")
     private Company company;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "details_id")
     private JobDetails details;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "source_id")
-    private JobSource source;
+
+    private String source;
 
     public static class JobBuilder {
         private String title;
@@ -44,7 +50,7 @@ public class Job {
         private List<String> tags;
         private Company company;
         private JobDetails details;
-        private JobSource source;
+        private String source;
 
         public JobBuilder(String title) { // Obavezan title
             this.title = title;
@@ -87,7 +93,7 @@ public class Job {
             return this;
         }
 
-        public JobBuilder source(JobSource source) {
+        public JobBuilder source(String source) {
             this.source = source;
             return this;
         }
@@ -111,11 +117,11 @@ public class Job {
         this.source = builder.source;
     }
 
-    public JobSource getSource() {
+    public String getSource() {
         return source;
     }
 
-    public void setSource(JobSource source) {
+    public void setSource(String source) {
         this.source = source;
     }
 

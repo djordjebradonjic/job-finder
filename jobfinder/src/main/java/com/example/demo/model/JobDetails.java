@@ -13,6 +13,7 @@ public class JobDetails {
     private String location;
     private String expirationDate;
     private String seniority;
+    @Column(length = 500)
     private String url;
 
     private JobDetails(JobDetailsBuilder builder) {
@@ -24,7 +25,6 @@ public class JobDetails {
     public static class JobDetailsBuilder {
         private String location;
         private String expirationDate;
-        private String expiryDate;
         private String seniority;
         private String url;
 
@@ -41,10 +41,6 @@ public class JobDetails {
             return this;
         }
 
-        public JobDetailsBuilder expiryDate(String expiryDate) {
-            this.expiryDate = expiryDate;
-            return this;
-        }
 
         public JobDetailsBuilder seniority(String seniority) {
             this.seniority = seniority;

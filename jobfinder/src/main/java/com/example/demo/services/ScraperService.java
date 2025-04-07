@@ -1,8 +1,12 @@
 package com.example.demo.services;
 
 
+import com.example.demo.model.Company;
 import com.example.demo.model.HelloWorldJobs;
 import com.example.demo.model.Job;
+import com.example.demo.model.JobDetails;
+import com.example.demo.repository.JobRepository;
+import org.modelmapper.ModelMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
@@ -10,6 +14,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -22,6 +27,11 @@ public class ScraperService {
 
     private final ChromeDriver driver;
     private List<HelloWorldJobs> jobs = new ArrayList<>();
+
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private JobRepository jobRepository;
 
 
 
@@ -125,14 +135,12 @@ public class ScraperService {
                         System.err.println("Expiry date element not found for job: " + title + ". Setting expiry date to '/'.");
                     }
 
-                    List<WebElement> tagElements = jobElement.findElements(By.cssSelector("a.btn.btn-xs.btn-outline-white.jobtag.__jobtag.w-auto.__ga4_job_tech_tag"));
-                    StringBuilder tags = new StringBuilder();
+                    List<WebElement> tagElements = jobElement.findElements(By.cssSelector("div.flex.items-center.gap-2.flex-wrap > a"));
+                    List<String> tags= new ArrayList<>();
                     for (WebElement tagElement : tagElements) {
-                        tags.append(tagElement.getText().trim()).append(", ");
+                        tags.add(tagElement.getText().trim());
                     }
-                    if (tags.length() > 2) {
-                        tags.delete(tags.length() - 2, tags.length());
-                    }
+
 
                     String seniority = "/";
                     try {
@@ -142,8 +150,9 @@ public class ScraperService {
                         System.err.println("Seniority element not found for job: " + title + ". Setting seniority to '/'.");
                     }
 
-                    HelloWorldJobs job = new HelloWorldJobs(title, company, location, expiryDate, tags.toString(), seniority, jobUrl);
+                    HelloWorldJobs job = new HelloWorldJobs(title, company, location, expiryDate, tags, seniority, jobUrl);
                     jobs.add(job);
+                    saveHelloWorldJob(job);
 
                     System.out.println("Title: " + title);
                     System.out.println("Company: " + company);
@@ -158,5 +167,23 @@ public class ScraperService {
                 System.err.println("Error extracting information from a job listing: " + e.getMessage());
             }
         }
+    }
+
+    private void saveHelloWorldJob(HelloWorldJobs helloWorldJob){
+        Company company = new Company.CompanyBuilder(helloWorldJob.getCompany()).build();
+        JobDetails jobDetails = new JobDetails.JobDetailsBuilder()
+                .location(helloWorldJob.getLocation())
+                .url(helloWorldJob.getUrl())
+                .expirationDate(helloWorldJob.getExpiryDate())
+                .seniority(helloWorldJob.getSeniority())
+                .build();
+        List<String> tags = helloWorldJob.getTags();
+
+        Job job = modelMapper.map(helloWorldJob, Job.class);
+        job.setCompany(company);
+        job.setDetails(jobDetails);
+        job.setTags(tags);
+        job.setSource("HelloWorld");
+        jobRepository.save(job);
     }
 }
