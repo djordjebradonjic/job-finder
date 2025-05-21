@@ -8,12 +8,14 @@ import com.example.demo.services.InfoStudScraperService;
 import com.example.demo.services.JobertyScraperService;
 import com.example.demo.services.ScraperService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("web-scraper")
 public class JobScraperController {
@@ -33,13 +35,17 @@ public class JobScraperController {
     }
 
     @GetMapping("/joberty")
-    public List<JobertyJob> scrapeJobertyJobs(){
-
-        return   jobertyScraperService.scrape();
-    }
+    public List<JobertyJob> scrapeJobertyJobs(){return   jobertyScraperService.scrape();}
 
     @GetMapping("/infoStud")
     public List<InfoStudJob> scrapeInfoStud(){
         return infoStudScraperService.scrape();
+    }
+
+    @GetMapping("/getAllJobs")
+    public void getAllJobs(){
+        jobertyScraperService.scrape();
+        scraperService.scrape();
+        infoStudScraperService.scrape();
     }
 }
