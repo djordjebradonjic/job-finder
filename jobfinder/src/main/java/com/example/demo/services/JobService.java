@@ -33,6 +33,8 @@ public class JobService {
         jobRepository.deleteById(id);
     }
 
+    public List<Job> findTop20BySource(String source){ return jobRepository.findTop10BySourceOrderByCreatedAtDesc(source);}
+
     public Job updateJob(Long id, Job job){
         Job existingJob = jobRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job not found"));

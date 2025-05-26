@@ -7,10 +7,7 @@ import com.example.demo.model.Job;
 import com.example.demo.model.JobDetails;
 import com.example.demo.repository.JobRepository;
 import org.modelmapper.ModelMapper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,14 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.NoSuchElementException;
 
 @Service
 public class ScraperService {
 
     private final String BaseURL = "https://www.helloworld.rs/oglasi-za-posao/programiranje/beograd?sort=p_vreme_postavljanja_sort&senioritet%5B0%5D=1&senioritet%5B1%5D=2&cat=340";
 
-    private final ChromeDriver driver;
     private List<HelloWorldJobs> jobs = new ArrayList<>();
 
     @Autowired
@@ -35,11 +35,12 @@ public class ScraperService {
 
 
 
-    public ScraperService(ChromeDriver driver) {
-        this.driver = driver;
+    public ScraperService() {
+
     }
 
     public List<HelloWorldJobs> scrape() {
+        WebDriver driver = new ChromeDriver();
         Set<String> processedJobUrls = new HashSet<>();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -101,7 +102,7 @@ public class ScraperService {
         }
     }
 
-    private void extractJobListings(List<WebElement> jobList, Set<String> processedJobUrls) { // Smanjio sam argumente
+    private void extractJobListings(List<WebElement> jobList, Set<String> processedJobUrls) {
         for (WebElement jobElement : jobList) {
             try {
                 WebElement titleElement = jobElement.findElement(By.cssSelector("h3 a.__ga4_job_title"));
@@ -130,9 +131,19 @@ public class ScraperService {
                     String expiryDate = "/";
                     try {
                         WebElement expiryElement = jobElement.findElement(By.cssSelector("div.flex.items-center.gap-1:nth-child(2) p.text-sm.font-semibold"));
-                        expiryDate = expiryElement.getText().trim();
+                        expiryDate = expiryElement.getText().replaceAll("\\.$", "").trim();
+                        System.out.println(expiryDate);
                     } catch (NoSuchElementException e) {
                         System.err.println("Expiry date element not found for job: " + title + ". Setting expiry date to '/'.");
+                    }
+                    LocalDate expirationDate = null;
+                    if (!expiryDate.equals("/")) {
+                        try {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                            expirationDate = LocalDate.parse(expiryDate, formatter);
+                        } catch (DateTimeParseException e) {
+                            System.err.println("Invalid date format: " + expiryDate);
+                        }
                     }
 
                     List<WebElement> tagElements = jobElement.findElements(By.cssSelector("div.flex.items-center.gap-2.flex-wrap > a"));
@@ -150,7 +161,7 @@ public class ScraperService {
                         System.err.println("Seniority element not found for job: " + title + ". Setting seniority to '/'.");
                     }
 
-                    HelloWorldJobs job = new HelloWorldJobs(title, company, location, expiryDate, tags, seniority, jobUrl);
+                    HelloWorldJobs job = new HelloWorldJobs(title, company, location, expirationDate, tags, seniority, jobUrl);
                     jobs.add(job);
                     saveHelloWorldJob(job);
 

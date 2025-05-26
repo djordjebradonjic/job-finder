@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/jobs")
 public class JobController {
@@ -62,6 +63,11 @@ public class JobController {
     @GetMapping("/search")
     public void searchJobs(@RequestBody SearchJobRequest searchJobRequest){
          joobleApiService.searchJobs(searchJobRequest.getKeywords(),searchJobRequest.getLocation());
+    }
+
+    @GetMapping("/fetchBySource/{source}")
+    public List<Job> fetchJobs(@PathVariable String source){
+        return jobService.findTop20BySource(source);
     }
 
 

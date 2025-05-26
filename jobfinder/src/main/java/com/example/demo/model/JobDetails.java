@@ -2,6 +2,9 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Table(name = "job_details")
 public class JobDetails {
@@ -11,11 +14,14 @@ public class JobDetails {
     private Long id;
 
     private String location;
-    private String expirationDate;
+
+    private LocalDate expirationDate;
+
     private String seniority;
     @Column(length = 500)
     private String url;
-
+    public JobDetails() {
+    }
     private JobDetails(JobDetailsBuilder builder) {
         this.location = builder.location;
         this.expirationDate = builder.expirationDate;
@@ -24,7 +30,7 @@ public class JobDetails {
     }
     public static class JobDetailsBuilder {
         private String location;
-        private String expirationDate;
+        private LocalDate expirationDate;
         private String seniority;
         private String url;
 
@@ -36,7 +42,7 @@ public class JobDetails {
             return this;
         }
 
-        public JobDetailsBuilder expirationDate(String expirationDate) {
+        public JobDetailsBuilder expirationDate(LocalDate expirationDate) {
             this.expirationDate = expirationDate;
             return this;
         }
@@ -64,11 +70,11 @@ public class JobDetails {
         this.location = location;
     }
 
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

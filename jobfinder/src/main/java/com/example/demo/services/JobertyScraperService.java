@@ -17,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class JobertyScraperService {
@@ -53,11 +56,24 @@ public class JobertyScraperService {
                 for (WebElement jobElement : jobList) {
 
                     WebElement titleElement = jobElement.findElement(By.cssSelector("span.text-gray-900 > a"));
-                    String title = titleElement.getText();
+
+                    String title = titleElement.getText().trim();
+                    String outerHTML = titleElement.getAttribute("outerHTML");
+                    Pattern pattern = Pattern.compile(">(.*?)<");
+                    Matcher matcher = pattern.matcher(outerHTML);
+                    if (matcher.find()) {
+                        System.out.println("Parsiran tekst iz outerHTML: " + matcher.group(1).trim());
+                        title=matcher.group(1).trim();
+                    }
+
+                    System.out.println("HTML sadržaj: " + titleElement.getAttribute("outerHTML"));
+
                     String detailsLink =  titleElement.getAttribute("href");
+                    System.out.println(title +"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
                     WebElement companyElement = jobElement.findElement(By.cssSelector("span.text-gray-500 > a"));
                     String company = companyElement.getText();
+                    System.out.println(company);
 
                     List<WebElement> tagElements= jobElement.findElements(By.cssSelector("span.inline-flex"));
                     List<String> tags= extractTags(tagElements);
@@ -91,12 +107,16 @@ public class JobertyScraperService {
     private void saveJobertyJob(JobertyJob jobertyJob){
         Company company = new Company.CompanyBuilder(jobertyJob.getCompany()).build();
         JobDetails details = new JobDetails.JobDetailsBuilder().url(jobertyJob.getDetailsLink()).build();
-
+        System.out.println("Title: " + jobertyJob.getTitle());
+        System.out.println("Company: " + jobertyJob.getCompany());
+        System.out.println("Tags: " + jobertyJob.getTags());
+        System.out.println("URL: " + jobertyJob.getDetailsLink());
         Job job = new Job.JobBuilder(jobertyJob.getTitle())
                 .details(details)
                 .company(company)
                 .tags(jobertyJob.getTags())
                 .source("Joberty")
+                .createdAt(LocalDateTime.now())
                 .build();
         jobRepository.save(job);
     }

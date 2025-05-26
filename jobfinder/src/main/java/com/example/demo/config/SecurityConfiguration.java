@@ -38,10 +38,13 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(customizer -> customizer.disable());
+       // http.authorizeHttpRequests(request -> request
+       //         .requestMatchers("register", "login","/web-scraper/**")
+       //         .permitAll()
+       //         .anyRequest().authenticated());
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("register", "login","web-scraper")
-                .permitAll()
-                .anyRequest().authenticated());
+                .anyRequest().permitAll()
+        );
        // http.formLogin(Customizer.withDefaults());
         http.httpBasic(Customizer.withDefaults())//this is for Postman
         .sessionManagement(sesion ->

@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -85,12 +89,21 @@ public class InfoStudScraperService {
         }catch (Exception e ){
             System.err.println("No location element");
         }
-        String expirationDate = "/";
+        String expirationDateString = "/";
         try {
             WebElement jobExpirationDateElement = job.findElement(By.cssSelector(".job-expiration"));
-            expirationDate = jobExpirationDateElement.getText().trim();
+            expirationDateString = jobExpirationDateElement.getText().trim();
         }catch (Exception e ){
             System.err.println("No expiration element");
+        }
+        LocalDate expirationDate = null;
+        if (!expirationDateString.equals("/")) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                expirationDate = LocalDate.parse(expirationDateString, formatter);
+            } catch (DateTimeParseException e) {
+                System.err.println("Invalid date format: " + expirationDateString);
+            }
         }
         List<String> tags = new ArrayList<>();
         try {
@@ -140,6 +153,7 @@ public class InfoStudScraperService {
                 .company(company)
                 .tags(infoStudJob.getTags())
                 .source("InfoStud")
+                .createdAt(LocalDateTime.now())
                 .build();
         jobRepository.save(job);
 

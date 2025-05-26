@@ -1,13 +1,15 @@
 package com.example.demo.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class InfoStudJob {
     private String title;
     private String company;
     private String location;
-    private String expirationDate;
+    private LocalDate expirationDate;
     private List<String> tags;
     private String companyReviewLink;
     private String numberOfReviews;
@@ -16,7 +18,7 @@ public class InfoStudJob {
         this.tags = new ArrayList<>();
     }
 
-    public InfoStudJob(String title, String company, String location, String expirationDate, List<String> tags, String companyReviewLink, String numberOfReviews) {
+    public InfoStudJob(String title, String company, String location, LocalDate expirationDate, List<String> tags, String companyReviewLink, String numberOfReviews) {
         this.title = title;
         this.company = company;
         this.location = location;
@@ -50,11 +52,11 @@ public class InfoStudJob {
         this.location = location;
     }
 
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

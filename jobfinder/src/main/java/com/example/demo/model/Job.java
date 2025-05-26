@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -40,6 +41,8 @@ public class Job {
     private JobDetails details;
 
     private String source;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public static class JobBuilder {
         private String title;
@@ -51,6 +54,7 @@ public class Job {
         private Company company;
         private JobDetails details;
         private String source;
+        private LocalDateTime createdAt;
 
         public JobBuilder(String title) { // Obavezan title
             this.title = title;
@@ -58,6 +62,10 @@ public class Job {
 
         public JobBuilder snippet(String snippet) {
             this.snippet = snippet;
+            return this;
+        }
+        public JobBuilder createdAt(LocalDateTime createdAt){
+            this.createdAt= createdAt;
             return this;
         }
 
@@ -115,6 +123,7 @@ public class Job {
         this.company = builder.company;
         this.details = builder.details;
         this.source = builder.source;
+        this.createdAt=builder.createdAt;
     }
 
     public String getSource() {
@@ -195,5 +204,21 @@ public class Job {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

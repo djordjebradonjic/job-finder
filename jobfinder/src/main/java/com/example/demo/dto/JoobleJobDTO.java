@@ -1,7 +1,10 @@
 package com.example.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JoobleJobDTO {
@@ -31,7 +34,7 @@ public class JoobleJobDTO {
     private String company;
 
     @JsonProperty("updated")
-    private String updated;
+    private LocalDate updated;
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -57,7 +60,7 @@ public class JoobleJobDTO {
     public String getCompany() { return company; }
     public void setCompany(String company) { this.company = company; }
 
-    public String getUpdated() { return updated; }
-    public void setUpdated(String updated) { this.updated = updated; }
+    public LocalDate getUpdated() { return updated; }
+    public void setUpdated(LocalDate updated) { this.updated = updated; }
 
 }
