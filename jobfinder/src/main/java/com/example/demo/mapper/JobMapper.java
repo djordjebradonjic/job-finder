@@ -19,7 +19,7 @@ public class JobMapper {
         JobDetails details = new JobDetails.JobDetailsBuilder()
                 .location(joobleJob.getLocation())
                 .url(joobleJob.getLink())
-                .expirationDate(joobleJob.getUpdated())
+                .expirationDate(joobleJob.getUpdatedAsLocalDate())
                 .build();
         return new Job.JobBuilder(joobleJob.getTitle())
                 .company(company)

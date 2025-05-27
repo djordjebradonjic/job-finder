@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -195,6 +196,7 @@ public class ScraperService {
         job.setDetails(jobDetails);
         job.setTags(tags);
         job.setSource("HelloWorld");
+        job.setCreatedAt(LocalDateTime.now());
         jobRepository.save(job);
     }
 }

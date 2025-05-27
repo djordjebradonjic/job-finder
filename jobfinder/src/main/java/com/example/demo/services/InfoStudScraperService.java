@@ -92,7 +92,7 @@ public class InfoStudScraperService {
         String expirationDateString = "/";
         try {
             WebElement jobExpirationDateElement = job.findElement(By.cssSelector(".job-expiration"));
-            expirationDateString = jobExpirationDateElement.getText().trim();
+            expirationDateString = jobExpirationDateElement.getText().replaceAll("\\.$", "").trim();
         }catch (Exception e ){
             System.err.println("No expiration element");
         }

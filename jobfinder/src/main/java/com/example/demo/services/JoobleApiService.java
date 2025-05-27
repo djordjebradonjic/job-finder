@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class JoobleApiService {
 
     private final RestTemplate restTemplate= new RestTemplate();
 
-    public void searchJobs(String keyWords, String location){
+    public List<JoobleJobDTO> searchJobs(String keyWords, String location){
 
         String url = "https://rs.jooble.org/api/" + apiKey;
 
@@ -56,13 +57,15 @@ public class JoobleApiService {
         HttpEntity<Map<String,Object>> httpEntity = new HttpEntity<>(requestBody,httpHeaders);
         ResponseEntity<String> response = restTemplate.postForEntity(url,httpEntity, String.class);
 
+        List<JoobleJobDTO> joobleJobDTOList = new ArrayList<>();
         if(response.getBody()!= null){
             try{
                 JoobleJobResponse jobResponse = objectMapper.readValue(response.getBody(), JoobleJobResponse.class);
 
 
-                List<JoobleJobDTO> joobleJobDTOList = jobResponse.getJobs();
+                joobleJobDTOList = jobResponse.getJobs();
                 for(JoobleJobDTO joobleJob : joobleJobDTOList){
+                    System.out.println(joobleJob.toString());
                     joobleJob.setSource("Jooble");
                     Job job = jobMapper.toEntity(joobleJob);
                     job.setCreatedAt(LocalDateTime.now());
@@ -75,6 +78,7 @@ public class JoobleApiService {
             }
 
         }
+        return joobleJobDTOList;
     }
 
     public void saveJob( Job job){

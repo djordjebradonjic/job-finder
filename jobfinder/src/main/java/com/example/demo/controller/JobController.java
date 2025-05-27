@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.JoobleJobDTO;
 import com.example.demo.dto.SearchJobRequest;
 import com.example.demo.model.Job;
 import com.example.demo.services.JobService;
@@ -61,8 +62,8 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    public void searchJobs(@RequestBody SearchJobRequest searchJobRequest){
-         joobleApiService.searchJobs(searchJobRequest.getKeywords(),searchJobRequest.getLocation());
+    public List<JoobleJobDTO> searchJobs(@RequestBody SearchJobRequest searchJobRequest){
+        return joobleApiService.searchJobs(searchJobRequest.getKeywords(),searchJobRequest.getLocation());
     }
 
     @GetMapping("/fetchBySource/{source}")
