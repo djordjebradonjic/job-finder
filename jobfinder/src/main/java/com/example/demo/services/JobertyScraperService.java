@@ -10,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,6 +117,15 @@ public class JobertyScraperService {
                 .source("Joberty")
                 .createdAt(LocalDateTime.now())
                 .build();
-        jobRepository.save(job);
+        if(job != null && jobRepository.existsByTitleAndCompany_NameAndDetails_Location(job.getTitle(),
+                job.getCompany().getName(),
+                job.getDetails().getLocation())){
+
+            jobRepository.save(job);
+        }else{
+            System.out.println("Job already exist : title = "+ job.getTitle()
+                    + " " + "company= " + job.getCompany().getName()
+                    + " location= " + job.getDetails().getLocation());
+        }
     }
 }

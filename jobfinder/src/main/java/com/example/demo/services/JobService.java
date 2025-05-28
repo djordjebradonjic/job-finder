@@ -33,7 +33,7 @@ public class JobService {
         jobRepository.deleteById(id);
     }
 
-    public List<Job> findTop20BySource(String source){ return jobRepository.findTop10BySourceOrderByCreatedAtDesc(source);}
+    public List<Job> findTop20BySource(String source){ return jobRepository.findTop25BySourceOrderByCreatedAtDesc(source);}
 
     public Job updateJob(Long id, Job job){
         Job existingJob = jobRepository.findById(id)

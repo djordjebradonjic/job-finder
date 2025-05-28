@@ -9,5 +9,8 @@ import java.util.List;
 @Repository
 public interface JobRepository extends JpaRepository<Job,Long> {
 
-    List<Job> findTop10BySourceOrderByCreatedAtDesc(String source);
+    List<Job> findTop25BySourceOrderByCreatedAtDesc(String source);
+    boolean existsByTitleAndCompany_NameAndDetails_Location(String title, String companyName, String location);
+
+
 }

@@ -155,7 +155,17 @@ public class InfoStudScraperService {
                 .source("InfoStud")
                 .createdAt(LocalDateTime.now())
                 .build();
-        jobRepository.save(job);
+        if(job != null && jobRepository.existsByTitleAndCompany_NameAndDetails_Location(job.getTitle(),
+                job.getCompany().getName(),
+                job.getDetails().getLocation())){
+
+            jobRepository.save(job);
+        }else{
+            System.out.println("Job already exist : title = "+ job.getTitle()
+                    + " " + "company= " + job.getCompany().getName()
+                    + " location= " + job.getDetails().getLocation());
+        }
+
 
     }
 }

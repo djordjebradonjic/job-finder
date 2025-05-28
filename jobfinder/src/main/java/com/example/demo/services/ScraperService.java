@@ -25,8 +25,7 @@ import java.util.NoSuchElementException;
 @Service
 public class ScraperService {
 
-    private final String BaseURL = "https://www.helloworld.rs/oglasi-za-posao/programiranje/beograd?sort=p_vreme_postavljanja_sort&senioritet%5B0%5D=1&senioritet%5B1%5D=2&cat=340";
-
+    private final String BaseURL = "https://www.helloworld.rs/oglasi-za-posao/programiranje?sort=p_vreme_postavljanja_sort&senioritet%5B0%5D=1&senioritet%5B1%5D=2&cat=340";
     private List<HelloWorldJobs> jobs = new ArrayList<>();
 
     @Autowired
@@ -197,6 +196,16 @@ public class ScraperService {
         job.setTags(tags);
         job.setSource("HelloWorld");
         job.setCreatedAt(LocalDateTime.now());
-        jobRepository.save(job);
+        if(jobRepository.existsByTitleAndCompany_NameAndDetails_Location(job.getTitle(),
+                job.getCompany().getName(),
+                job.getDetails().getLocation())){
+
+            jobRepository.save(job);
+        }else{
+            System.out.println("Job already exist : title = "+ job.getTitle()
+                    + " " + "company= " + job.getCompany().getName()
+                    + " location= " + job.getDetails().getLocation());
+        }
+
     }
 }

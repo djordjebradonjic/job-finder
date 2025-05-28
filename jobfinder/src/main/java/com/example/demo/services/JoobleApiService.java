@@ -4,9 +4,7 @@ package com.example.demo.services;
 import com.example.demo.dto.JoobleJobDTO;
 import com.example.demo.dto.JoobleJobResponse;
 import com.example.demo.mapper.JobMapper;
-import com.example.demo.model.Company;
 import com.example.demo.model.Job;
-import com.example.demo.model.JobDetails;
 import com.example.demo.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class JoobleApiService {
@@ -82,7 +79,16 @@ public class JoobleApiService {
     }
 
     public void saveJob( Job job){
-        if(job != null )
+        if(job != null && jobRepository.existsByTitleAndCompany_NameAndDetails_Location(job.getTitle(),
+                job.getCompany().getName(),
+                job.getDetails().getLocation())){
+
             jobRepository.save(job);
+        }else{
+            System.out.println("Job already exist : title = "+ job.getTitle()
+                    + " " + "company= " + job.getCompany().getName()
+                    + " location= " + job.getDetails().getLocation());
+        }
+
     }
 }
