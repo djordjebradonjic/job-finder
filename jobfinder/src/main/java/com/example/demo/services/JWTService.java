@@ -28,6 +28,9 @@ public class JWTService {
     }
 
     public Claims extractAllClaims(String token){
+        if (token == null || token.trim().isEmpty()) {
+            throw new IllegalArgumentException("JWT token is missing");
+        }
         return Jwts.parser()
                 .setSigningKey(getSignInKey())
                 .build()
