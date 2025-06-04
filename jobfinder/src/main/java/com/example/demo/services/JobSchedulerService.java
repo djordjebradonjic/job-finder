@@ -25,15 +25,15 @@ public class JobSchedulerService {
 
         }
 
-        @Scheduled(fixedRate = 2 * 60 * 60 * 1000)
-        public void fetchJobsFromAllSources() {
-            System.out.println("Fetching jobs... " + LocalDateTime.now());
-           scraperService.scrape();
-           infoStudScraperService.scrape();
-           jobertyScraperService.scrape();
-            String keywords = "java";
-            String location = "Serbia";
-            joobleApiService.searchJobs(keywords, location);
-        }
+//        @Scheduled(fixedRate = 2 * 60 * 60 * 1000)
+//        public void fetchJobsFromAllSources() {
+//            System.out.println("Fetching jobs... " + LocalDateTime.now());
+//           scraperService.scrape();
+//           infoStudScraperService.scrape();
+//           jobertyScraperService.scrape();
+//            String keywords = "java";
+//            String location = "Serbia";
+//            joobleApiService.searchJobs(keywords, location);
+//        }
     }
 

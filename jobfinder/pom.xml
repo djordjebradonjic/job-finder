@@ -113,6 +113,9 @@
 
 
     <build>
+
+        <finalName>jobfinder</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
